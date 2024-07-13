@@ -2,9 +2,10 @@
   "name": "e-commerce-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx nodemon",
+    "test": "mocha --timeout 10000 --exit"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,9 @@
     "mongoose": "^8.5.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "chai": "^5.1.1",
+    "mocha": "^10.6.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
   }
 }
