@@ -2,13 +2,11 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const Product = require("../models/Product");
+const assert = require("assert");
 
 describe("Product API", () => {
-  let expect;
-
   before(async () => {
-    expect = (await import("chai")).expect;
-    await mongoose.connect(process.env.MONGO_URI, {});
+    await mongoose.connect(process.env.MONGO_URI);
   });
 
   after(async () => {
@@ -31,8 +29,8 @@ describe("Product API", () => {
     await product.save();
 
     const res = await request(app).get("/api/products");
-    expect(res.status).to.equal(200);
-    expect(res.body).to.be.an("array");
-    expect(res.body.length).to.equal(1);
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(res.body.length, 1);
+    assert.strictEqual(res.body[0].name, "Test Product");
   });
 });

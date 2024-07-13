@@ -1,14 +1,25 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const app = require("../app");
 const Order = require("../models/Order");
+const User = require("../models/User");
+const assert = require("assert");
 
 describe("Order API", () => {
-  let expect;
-
+  let token;
   before(async () => {
-    expect = (await import("chai")).expect;
-    await mongoose.connect(process.env.MONGO_URI, {});
+    await mongoose.connect(process.env.MONGO_URI);
+    const user = new User({
+      name: "Test User",
+      email: "testuser@example.com",
+      password: "password123",
+    });
+    await user.save();
+
+    token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
   });
 
   after(async () => {
@@ -17,6 +28,7 @@ describe("Order API", () => {
 
   afterEach(async () => {
     await Order.deleteMany({});
+    await User.deleteMany({});
   });
 
   it("should create a new order", async () => {
@@ -42,9 +54,12 @@ describe("Order API", () => {
       totalPrice: 115,
     };
 
-    const res = await request(app).post("/api/orders").send(orderData);
-    expect(res.status).to.equal(201);
-    expect(res.body).to.be.an("object");
-    expect(res.body).to.have.property("orderItems");
+    const res = await request(app)
+      .post("/api/orders")
+      .set("Authorization", `Bearer ${token}`)
+      .send(orderData);
+
+    assert.strictEqual(res.status, 201);
+    assert.strictEqual(res.body.orderItems[0].name, "Product 1");
   });
 });

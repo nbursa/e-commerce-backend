@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const auth = async (req, res) => {
+const auth = async (req, res, next) => {
   let token;
 
   if (
@@ -17,7 +17,6 @@ const auth = async (req, res) => {
 
       next();
     } catch (err) {
-      console.error(err.message);
       res.status(401).json({ msg: "Not authorized, token failed" });
     }
   }

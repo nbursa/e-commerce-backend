@@ -2,13 +2,11 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const User = require("../models/User");
+const assert = require("assert");
 
 describe("User API", () => {
-  let expect;
-
   before(async () => {
-    expect = (await import("chai")).expect;
-    await mongoose.connect(process.env.MONGO_URI, {});
+    await mongoose.connect(process.env.MONGO_URI);
   });
 
   after(async () => {
@@ -26,7 +24,7 @@ describe("User API", () => {
       password: "password123",
     });
 
-    expect(res.status).to.equal(201);
-    expect(res.body).to.have.property("msg", "User registered successfully");
+    assert.strictEqual(res.status, 201);
+    assert.strictEqual(res.body.msg, "User registration successful");
   });
 });

@@ -13,6 +13,6 @@ const orderRoutes = require("./routes/order");
 
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/order", orderRoutes);
+app.use("/api/orders", orderRoutes);
 
 module.exports = app;
